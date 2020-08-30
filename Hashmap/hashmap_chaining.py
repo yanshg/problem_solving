@@ -44,14 +44,13 @@ class DoubleLinkedList:
         return string
 
     def append(self, node):
-        if self.tail:
+        if self.head is None and self.tail is None:
+            self.head = self.tail = node
+        else:
             node.prev = self.tail
             node.next = None
             self.tail.next = node
-
-        self.tail = node
-        if not self.head:
-            self.head = node
+            self.tail = node
 
     def delete(self, node):
         if not node:
