@@ -40,12 +40,7 @@ LINEAR_PROBING=0
 QUADRATIC_PROBING=1
 DOUBLE_HASH=2
 
-import sys,hashlib
-
-if sys.version_info[0] == 3:
-    _get_byte = lambda c:c
-else:
-    _get_byte = ord
+import hashlib
 
 class HashMap:
     def __init__(self,capacity=CAPACITY,probe_mode=LINEAR_PROBING):
@@ -54,60 +49,51 @@ class HashMap:
         self.probe_mode = probe_mode
         self.count = 0
 
-    # DJB2 Hash algorithm
     def _hash(self, key):
-        bs = str(key).encode('utf-8')
+        return int(hashlib.md5(str(key).encode('utf-8')).hexdigest(), 16) % len(self.array)
 
-        use_simple_hash_function = False
-        if use_simple_hash_function:
-            hash =  5381
-            for b in bs:
-                hash = (hash * 33) + _get_byte(b)
-        else:
-            hash = int(hashlib.md5(bs).hexdigest(), 16)
-        return hash % len(self.array)
-
-    # return (index for the exist key, index which available for the key)
+    # Returns:
+    # -1:    means: the hashmap is full, could not find the key
+    # index: means: if array[index] is blank, means could not find the key.
+    #               else means find the key.
     def _get_index(self, key):
         index = self._hash(key)
         orig_index = index
-        while True:
-            if not self.array[index]:
-                return (-1, index)
-
-            if self.array[index][0] == key:
-                return (index, index)
-
+        while self.array[index] and self.array[index][0] != key:
             # Linear probing
             index = (index + 1) % len(self.array)
             if index == orig_index:
-                break
+                # Hash table is full, could not find the key
+                return -1
 
-        return (-1, -1)
+        return index
 
     def exists(self, key):
-        exist_index,_ = self._get_index(key)
-        return exist_index != -1
+        index = self._get_index(key)
+        return index != -1 and bool(self.array[index])
 
     def get(self, key):
-        exist_index,_  = self._get_index(key)
-        if exist_index == -1:
+        index = self._get_index(key)
+        if index == -1 or not self.array[index]:
             return None
 
-        return self.array[exist_index][1]
+        return self.array[index][1]
 
     def put(self, key, value):
-        exist_index,avail_index = self._get_index(key)
-        if exist_index != -1:
-            self.array[exist_index][1] = value
-        elif avail_index != -1:
-            self.array[avail_index] = [key, value]
+        index = self._get_index(key)
+        if index == -1:
+            return
+
+        if self.array[index]:
+            self.array[index][1] = value
+        else:
+            self.array[index] = [key, value]
             self.count += 1
 
     def delete(self, key):
-        exist_index,_  = self._get_index(key)
-        if exist_index != -1:
-            self.array[exist_index] = []
+        index  = self._get_index(key)
+        if index != -1 and self.array[index]:
+            self.array[index] = []
             self.count -= 1
 
     def load_factor(self):
