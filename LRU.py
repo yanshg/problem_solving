@@ -2,7 +2,7 @@
 
 # Least Recently Used Cache
 
-CAPACITY = 3
+CAPACITY = 128
 
 class CacheNode:
     def __init__(self, key, value):
@@ -42,7 +42,7 @@ class DoubleLinkedList:
         tail = self.tail.prev
         return tail if tail != self.head else None
 
-class LRU:
+class LRUCache:
     def __init__(self, capacity=CAPACITY):
         self.capacity = capacity
         self.hashmap = dict()
@@ -80,7 +80,7 @@ class LRU:
                 linkedlist.remove(tail)
                 del self.hashmap[tail.key]
 
-cache = LRU()
+cache = LRUCache(3)
 cache.put(1, 'hello1')
 cache.put(2, 'hello2')
 cache.put(3, 'hello3')
