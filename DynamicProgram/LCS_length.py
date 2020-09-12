@@ -9,11 +9,11 @@
 
 # Use DP table
 #
-# DP[i][j]: the longest common sequence for X[:i+1] and Y[:j+1]
+# DP[i][j]: the length of longest common sequence for X[:i+1] and Y[:j+1]
 #
 # X' = '' + X
 # Y' = '' + Y
-# lcs_str(X',Y') = lcs_str(X, Y)
+# lcs_len(X',Y') = lcs_len(X, Y)
 #
 # if X'[i] == Y'[j]:
 #     DP[i][j] = DP[i-1][j-1] + 1
@@ -33,7 +33,7 @@
 #
 # Results: DP[m][n] or DP[-1][-1]
 
-def get_lcs_str(X,Y):
+def get_lcs_len(X,Y):
     m, n = len(X),len(Y)
     DP = [ [ 0 for j in range(n+1) ] for i in range(m+1) ]
 
@@ -46,4 +46,4 @@ def get_lcs_str(X,Y):
 
     return DP[-1][-1]
 
-assert get_lcs_str("XMJYAUZ", "MZJAWXU") == 4
+assert get_lcs_len("XMJYAUZ", "MZJAWXU") == 4
