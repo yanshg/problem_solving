@@ -27,9 +27,6 @@ def get_lps_len(X):
     for c in range(1, n):
         for i in range(n-c):
             j = i + c
-            if i == j:
-                continue
-
             if X[i] == X[j]:
                 DP[i][j] = DP[i+1][j-1] + 2
             else:
@@ -37,4 +34,24 @@ def get_lps_len(X):
 
     return DP[0][-1]
 
+# Simplify to use one dimension array. O(N^2), space(O(2*N))
+def get_lps_len2(X):
+    n = len(X)
+    DP_last = [0] * (n-1)
+    DP = [1] * n
+
+    for c in range(1,n):
+        for i in range(n-c):
+            j = i + c
+            if X[i] == X[j]:
+                DP[i] = DP_last[i] + 2
+            else:
+                DP[i] = max(DP[i], DP[i+1])
+            DP_last[i] = DP[i+1]
+        print("DP_last:", DP_last[:(n-c-1)])
+        print("DP:", DP[:(n-c)])
+
+    return DP[0]
+
 assert get_lps_len("ABBDCACB") == 5
+assert get_lps_len2("ABBDCACB") == 5

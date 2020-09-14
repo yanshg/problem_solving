@@ -27,9 +27,6 @@ def get_lps_str(X):
     for c in range(1, n):
         for i in range(n-c):
             j = i + c
-            if i == j:
-                continue
-
             if X[i] == X[j]:
                 DP[i][j] = X[i] + DP[i+1][j-1] + X[j]
             else:
