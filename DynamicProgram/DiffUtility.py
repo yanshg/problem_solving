@@ -45,6 +45,22 @@ def get_lcs_len(X, Y, m, n, DP):
                 DP[i][j] = max(DP[i-1][j], DP[i][j-1])
 
 def get_diff(X, Y, m, n, DP):
+    # if last character of X and Y matches
+    if m > 0 and n > 0 and X[m - 1] == Y[n - 1]:
+        get_diff(X, Y, m - 1, n - 1, DP)
+        print("", X[m - 1], end='')
+
+    # current character of Y is not present in X
+    elif n > 0 and (m == 0 or DP[m][n - 1] >= DP[m - 1][n]):
+        get_diff(X, Y, m, n - 1, DP)
+        print(" +" + Y[n - 1], end='')
+
+    # current character of X is not present in Y
+    elif m > 0 and (n == 0 or DP[m][n - 1] < DP[m - 1][n]):
+        get_diff(X, Y, m - 1, n, DP)
+        print(" -" + X[m - 1], end='')
+
+def get_diff1(X, Y, m, n, DP):
     if m==0 and n==0:
         return
 
@@ -63,8 +79,8 @@ def get_diff(X, Y, m, n, DP):
         print("+{}".format(Y[n-1]), end=' ')
 
 def diff_utility(X, Y):
-    print("X: ", X)
-    print("Y: ", Y)
+    print(" X: ", X)
+    print(" Y: ", Y)
     m, n = len(X),len(Y)
     DP = [ [ 0 for j in range(n+1) ] for i in range(m+1) ]
     get_lcs_len(X, Y, m, n, DP)
